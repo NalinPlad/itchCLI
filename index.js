@@ -19,6 +19,10 @@ function getApps(path) {
   });
 }
 
+function sanitizePath(path) {
+    return path.replace(/ /g, "\\ ")
+}
+
 app_dirs = getDirectories(apps_path);
 app_names = app_dirs.map((e) => e.replace(/-/g, " "));
 
@@ -37,12 +41,14 @@ prompt
   .then((answer) => {
     console.log("Launching .. 🚀");
 
+    app_folder = answer.replace(/ /g, "-");
+
     launch_dir =
-      apps_path + getApps(apps_path + answer.replace(/ /g, "-"))[0] + "/";
+      sanitizePath(apps_path) + app_folder + "/" + getApps(apps_path + app_folder)[0] + "/";
 
     console.log(launch_dir);
     
-    childProcess.exec(launch_dir, function (err, stdout, stderr) {
+    childProcess.exec("open "+launch_dir, function (err, stdout, stderr) {
             if (err) {
             console.error(err);
             return;
